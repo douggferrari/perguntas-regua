@@ -16,7 +16,7 @@ from fastapi.templating import Jinja2Templates
 
 from . import db
 
-VERSAO = "1.1"
+VERSAO = "1.2"
 BASE = Path(__file__).resolve().parent
 # Identifica a pessoa para valer "uma resposta por pessoa". É por navegador:
 # janela anônima burla, mas IP não serve (no escritório todos saem pelo mesmo).
@@ -94,7 +94,7 @@ def api_resultado():
 def responder(request: Request):
     suas = respostas_da_pessoa(request)
     if suas is not None:
-        return pagina(request, "obrigado.html", respostas=suas, ja_respondeu=True)
+        return pagina(request, "ja_respondeu.html", respostas=suas)
     return pagina(request, "responder.html", perguntas=perguntas_atuais())
 
 
@@ -108,17 +108,13 @@ async def enviar(request: Request):
     pessoa = request.cookies.get(COOKIE_PESSOA, "")[:64] or secrets.token_urlsafe(16)
     with db.conectar() as con:
         registrada = db.adicionar(con, pessoa, valores)
-    # Quem já tinha respondido volta para /r, que mostra as respostas originais.
-    destino = RedirectResponse("/r/obrigado" if registrada else "/r", status_code=303)
+    # A resposta já está contada aqui: quem acabou de enviar vai direto para o
+    # resultado, com um aviso; quem já tinha respondido volta para /r, que mostra
+    # as respostas originais.
+    destino = RedirectResponse("/?enviado=1" if registrada else "/r", status_code=303)
     destino.set_cookie(COOKIE_PESSOA, pessoa, max_age=UM_ANO, httponly=True, samesite="lax",
                        secure=request.url.scheme == "https")
     return destino
-
-
-@app.get("/r/obrigado")
-def obrigado(request: Request):
-    return pagina(request, "obrigado.html", respostas=respostas_da_pessoa(request),
-                  ja_respondeu=False)
 
 
 @app.get("/qr.svg")

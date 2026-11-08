@@ -325,6 +325,27 @@ a { color: var(--destaque); }
 .sem-dados .regua .preenchido,
 .sem-dados .regua-media { opacity: 0; }
 
+/* Aviso para quem acabou de enviar e caiu no painel (?enviado=1). */
+.aviso-enviado {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  z-index: 2;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  margin: 0;
+  padding: 10px 18px;
+  background: var(--destaque);
+  color: var(--destaque-texto);
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.2);
+  font-weight: 700;
+  text-align: center;
+  transform: translateX(-50%);
+  transition: opacity 0.6s ease;
+}
+.aviso-enviado.saindo { opacity: 0; }
+
 /* O QR fica sempre preto no branco, em qualquer tema, para a câmera ler. */
 .qr {
   position: fixed;

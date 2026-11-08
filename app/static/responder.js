@@ -78,7 +78,7 @@
   form.addEventListener("submit", () => {
     botao.disabled = true; // duplo toque
   });
-  // Voltar do "obrigado" pelo botão do celular restaura a página do cache:
+  // Voltar do resultado pelo botão do celular restaura esta página do cache:
   // recarrega para o servidor mostrar o que a pessoa já respondeu.
   addEventListener("pageshow", (e) => {
     if (e.persisted) location.reload();

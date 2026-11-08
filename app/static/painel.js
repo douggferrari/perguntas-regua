@@ -14,9 +14,22 @@
   let ids = "";
   let recebido = "";
 
-  const tema = new URLSearchParams(location.search).get("tema");
+  const params = new URLSearchParams(location.search);
+  const tema = params.get("tema");
   if (tema === "escuro") document.documentElement.dataset.theme = "dark";
   if (tema === "claro") document.documentElement.dataset.theme = "light";
+
+  // Quem acabou de enviar cai aqui com ?enviado=1: avisa e tira o parâmetro da
+  // URL, para recarregar a página não repetir o aviso.
+  if (params.has("enviado")) {
+    const aviso = document.getElementById("enviado");
+    aviso.hidden = false;
+    aviso.addEventListener("transitionend", () => (aviso.hidden = true));
+    setTimeout(() => aviso.classList.add("saindo"), 6000);
+    params.delete("enviado");
+    const resto = params.toString();
+    history.replaceState(null, "", location.pathname + (resto ? `?${resto}` : ""));
+  }
 
   // Recria as linhas só quando o conjunto de perguntas muda no /admin.
   function montar(perguntas) {
@@ -49,7 +62,13 @@
     }
   }
 
+  let espera = null;
+  let buscando = false;
+
   async function atualizar() {
+    if (buscando) return; // a busca em andamento já agenda a próxima
+    buscando = true;
+    clearTimeout(espera);
     try {
       const resp = await fetch("/api/resultado", { cache: "no-store" });
       if (resp.ok) {
@@ -62,8 +81,18 @@
     } catch {
       // rede caiu: tenta de novo no próximo ciclo
     }
-    setTimeout(atualizar, INTERVALO_MS);
+    buscando = false;
+    espera = setTimeout(atualizar, INTERVALO_MS);
   }
+
+  // Aba escondida (celular bloqueado, outra aba na frente) tem o timer congelado
+  // pelo navegador: ao reaparecer, busca na hora em vez de mostrar número velho.
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) atualizar();
+  });
+  addEventListener("pageshow", (e) => {
+    if (e.persisted) atualizar();
+  });
 
   qr.addEventListener("click", () => qr.classList.toggle("ampliado"));
 

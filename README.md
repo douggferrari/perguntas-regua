@@ -31,6 +31,10 @@ do deploy.
   botão só libera com todas respondidas.
 - Rolar a página passando o dedo por cima de uma régua não marca nada; marca o
   toque parado ou o deslize para o lado.
+- A resposta entra na conta no **Enviar respostas**: a pessoa vai direto para o
+  resultado, já com as respostas dela, e o painel projetado mostra a mudança
+  em até 3 segundos. Painel em aba escondida ou celular bloqueado fica parado
+  (o navegador congela a página) e se atualiza na hora em que volta à tela.
 
 ## Uma resposta por pessoa
 

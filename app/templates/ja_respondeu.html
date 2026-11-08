@@ -1,13 +1,11 @@
 {% extends "base.html" %}
-{% block titulo %}Respostas enviadas · Perguntas{% endblock %}
+{% block titulo %}Você já respondeu · Perguntas{% endblock %}
 {% block classe %}tela-resposta{% endblock %}
 {% block corpo %}
 <main class="cartao centro">
   <div class="check" aria-hidden="true">✓</div>
-  <h1>{% if ja_respondeu %}Você já respondeu{% else %}Respostas enviadas!{% endif %}</h1>
-  <p class="dica">
-    {% if ja_respondeu %}Cada pessoa responde uma vez.{% else %}Elas já entraram na média do painel.{% endif %}
-  </p>
+  <h1>Você já respondeu</h1>
+  <p class="dica">Cada pessoa responde uma vez. Suas respostas já estão no resultado:</p>
   {% if respostas %}
   <ol class="suas-respostas">
     {% for r in respostas %}
