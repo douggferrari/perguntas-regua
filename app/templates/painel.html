@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block classe %}tela-painel{% endblock %}
+{% block corpo %}
+<main id="painel" class="painel">
+  <p class="painel-aviso">Carregando…</p>
+</main>
+<aside id="qr" class="qr" title="Clique para ampliar">
+  <img src="/qr.svg" alt="QR code para responder" width="160" height="160">
+  <strong class="qr-url">{{ url_curta }}</strong>
+  <span id="total" class="qr-total"></span>
+</aside>
+<template id="modelo-linha">
+  <section class="linha sem-dados">
+    <h2 class="linha-pergunta"><span class="linha-num"></span><span class="linha-texto"></span></h2>
+    <div class="linha-regua">
+      <span class="extremo nao">Não</span>
+      <div class="regua">
+        <div class="regua-trilho"><div class="preenchido"></div></div>
+        <div class="regua-escala" aria-hidden="true">
+          {%- for i in range(0, 101, 5) %}<i{% if i % 25 == 0 %} class="maior"{% endif %} style="left: {{ i }}%"></i>{% endfor %}
+          {%- for i in range(0, 101, 25) %}<span style="left: {{ i }}%">{{ i }}%</span>{% endfor %}
+        </div>
+        <div class="regua-media"><span class="regua-valor"></span></div>
+      </div>
+      <span class="extremo sim">Sim</span>
+    </div>
+  </section>
+</template>
+<script src="/static/painel.js?v={{ versao }}"></script>
+{% endblock %}

@@ -1,0 +1,428 @@
+:root {
+  --fundo: #f5f6fa;
+  --superficie: #ffffff;
+  --texto: #161a2e;
+  --suave: #5c6279;
+  --borda: #dde0ea;
+  --escala: #9aa0b8;
+  --destaque: #3445d4;
+  --destaque-texto: #ffffff;
+  --perigo: #c3243b;
+  --nao: #c3243b;
+  --sim: #0b8063;
+  --luz-regua: 44%;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fundo: #0e1122;
+    --superficie: #171b30;
+    --texto: #eef0f8;
+    --suave: #a3a9c2;
+    --borda: #2b3152;
+    --escala: #5c6386;
+    --destaque: #8494ff;
+    --destaque-texto: #0e1122;
+    --perigo: #ff7088;
+    --nao: #ff7088;
+    --sim: #45d8a8;
+    --luz-regua: 52%;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --fundo: #0e1122;
+  --superficie: #171b30;
+  --texto: #eef0f8;
+  --suave: #a3a9c2;
+  --borda: #2b3152;
+  --escala: #5c6386;
+  --destaque: #8494ff;
+  --destaque-texto: #0e1122;
+  --perigo: #ff7088;
+  --nao: #ff7088;
+  --sim: #45d8a8;
+  --luz-regua: 52%;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body {
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Roboto, Arial, sans-serif;
+  line-height: 1.45;
+  -webkit-text-size-adjust: 100%;
+}
+button, input, textarea { font: inherit; }
+a { color: var(--destaque); }
+
+/* ---------- régua (resposta e painel) ----------
+   --v vai de 0 (Não) a 100 (Sim) e é posto pelo JS ou no HTML. A cor sai dele:
+   o matiz anda do vermelho (0) pelo amarelo (50) até o verde (130). --cor-regua
+   precisa ser declarada no mesmo elemento que recebe o --v. */
+
+.regua-entrada, .regua, .mini-regua {
+  --v: 50;
+  --cor-regua: hsl(calc(var(--v) * 1.3) 72% var(--luz-regua));
+}
+.trilho, .regua-trilho, .mini-regua {
+  position: relative;
+  border-radius: 99px;
+  background: linear-gradient(to right,
+    hsl(0 72% 44% / 0.16), hsl(65 72% 44% / 0.16), hsl(130 72% 44% / 0.16));
+}
+.preenchido {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--v) * 1%);
+  background: var(--cor-regua);
+  border-radius: inherit;
+}
+
+/* ---------- resposta (celular) ---------- */
+
+.tela-resposta {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+}
+.cartao {
+  width: 100%;
+  max-width: 560px;
+  padding: 28px 22px;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.06);
+}
+.cartao h1 { margin: 0 0 6px; font-size: 1.45rem; line-height: 1.25; }
+.rotulo {
+  margin: 0 0 6px;
+  color: var(--suave);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.dica { margin: 10px 0 18px; color: var(--suave); font-size: 0.9rem; }
+.erro { margin: 10px 0 0; color: var(--perigo); font-weight: 600; }
+.botao {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background: var(--destaque);
+  color: var(--destaque-texto);
+  border: 0;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+.botao:disabled { opacity: 0.6; cursor: default; }
+.centro { text-align: center; }
+.check {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  background: var(--destaque);
+  color: var(--destaque-texto);
+  border-radius: 50%;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.questao { padding: 16px 0 14px; border-top: 1px solid var(--borda); }
+.questao h2 {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.questao-num {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  background: var(--fundo);
+  color: var(--suave);
+  border-radius: 50%;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+/* A área de toque é bem maior que o trilho; pan-y deixa a página rolar na vertical. */
+.regua-entrada {
+  padding: 22px 16px;
+  touch-action: pan-y;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.regua-entrada:focus-visible { outline: 2px solid var(--destaque); outline-offset: -4px; border-radius: 14px; }
+.trilho { height: 14px; }
+.polegar {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--v) * 1%);
+  width: 30px;
+  height: 30px;
+  background: var(--superficie);
+  border: 5px solid var(--cor-regua);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.22);
+  transform: translate(-50%, -50%);
+}
+.questao:not(.respondida) .preenchido,
+.questao:not(.respondida) .polegar { visibility: hidden; }
+.extremos {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: -10px;
+  font-weight: 700;
+}
+.nao { color: var(--nao); }
+.sim { color: var(--sim); }
+.extremos .valor { color: var(--suave); font-size: 0.85rem; font-weight: 500; }
+.respondida .extremos .valor { color: var(--texto); font-size: 1.05rem; font-weight: 700; }
+.questao + .erro, .questao + .dica { margin-top: 4px; }
+
+.suas-respostas {
+  margin: 4px 0 22px;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+.suas-respostas li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--borda);
+}
+.sua-pergunta { grid-column: 1 / -1; font-size: 0.92rem; line-height: 1.3; }
+.mini-regua { height: 10px; }
+.sua-nota { min-width: 3.2em; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ---------- painel (telão) ----------
+   Tudo em em a partir do font-size do painel, que acompanha a tela. */
+
+.tela-painel { min-height: 100vh; min-height: 100dvh; }
+.painel {
+  --balao: clamp(34px, 5.2vh, 64px);  /* espaço para o número acima do marcador */
+  --trilho: clamp(12px, 1.8vh, 22px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 0.6em;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: clamp(16px, 3vh, 40px) calc(172px + 56px) clamp(16px, 3vh, 40px) clamp(16px, 3vw, 56px);
+  font-size: clamp(14px, min(1.25vw, 2.3vh), 28px);
+}
+.painel-aviso { margin: 0; color: var(--suave); text-align: center; font-size: 1.3em; }
+.linha-pergunta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  margin: 0 0 0.2em;
+  font-size: 1.3em;
+  font-weight: 600;
+  line-height: 1.22;
+}
+.linha-num {
+  flex: none;
+  min-width: 1.4em;
+  color: var(--suave);
+  font-weight: 700;
+  text-align: right;
+}
+.linha-regua {
+  display: flex;
+  align-items: flex-start;
+  gap: 1em;
+  padding-left: 2em;
+}
+.extremo {
+  flex: none;
+  width: 2.6em;
+  margin-top: calc(var(--balao) + var(--trilho) / 2);
+  font-size: 1.15em;
+  font-weight: 700;
+  line-height: 1;
+  transform: translateY(-50%);
+}
+.extremo.sim { text-align: right; }
+.regua { position: relative; flex: 1; padding-top: var(--balao); }
+.regua-trilho { height: var(--trilho); }
+.regua-escala { position: relative; height: 2.2em; }
+.regua-escala i {
+  position: absolute;
+  top: 5px;
+  width: 2px;
+  height: 7px;
+  background: var(--borda);
+  transform: translateX(-50%);
+}
+.regua-escala i.maior { height: 13px; background: var(--escala); }
+.regua-escala span {
+  position: absolute;
+  top: 20px;
+  color: var(--suave);
+  font-size: 0.72em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  transform: translateX(-50%);
+}
+.regua-media {
+  position: absolute;
+  top: calc(var(--balao) + var(--trilho) / 2);
+  left: calc(var(--v) * 1%);
+  width: calc(var(--trilho) + 18px);
+  height: calc(var(--trilho) + 18px);
+  background: var(--cor-regua);
+  border: 4px solid var(--superficie);
+  border-radius: 50%;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.25);
+  transform: translate(-50%, -50%);
+}
+.regua-valor {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  font-size: 1.45em;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  transform: translateX(-50%);
+}
+.regua .preenchido,
+.regua-media {
+  transition: left 0.9s ease, width 0.9s ease, background-color 0.9s ease, opacity 0.4s ease;
+}
+.sem-dados .regua .preenchido,
+.sem-dados .regua-media { opacity: 0; }
+
+/* O QR fica sempre preto no branco, em qualquer tema, para a câmera ler. */
+.qr {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 172px;
+  padding: 12px 12px 10px;
+  background: #fff;
+  color: #161a2e;
+  border-radius: 14px;
+  box-shadow: 0 8px 28px rgb(0 0 0 / 0.18);
+  text-align: center;
+  cursor: zoom-in;
+}
+.qr img { display: block; width: 100%; height: auto; }
+.qr-url { display: block; margin-top: 4px; font-size: 0.78rem; line-height: 1.25; overflow-wrap: anywhere; }
+.qr-total { display: block; color: #5c6279; font-size: 0.75rem; }
+.qr.ampliado { width: min(72vh, 80vw); cursor: zoom-out; }
+.qr.ampliado .qr-url { font-size: 1.5rem; }
+.qr.ampliado .qr-total { font-size: 1rem; }
+@media (max-width: 640px) {
+  .qr { display: none; }   /* no celular a pessoa já está com o link */
+  .painel { padding-right: 16px; font-size: 15px; }
+  .linha-regua { padding-left: 0; gap: 0.6em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .regua .preenchido, .regua-media { transition: none; }
+}
+
+/* ---------- admin ---------- */
+
+.tela-admin { padding: 24px 16px 48px; }
+.admin { max-width: 760px; margin: 0 auto; }
+.admin-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 20px;
+  margin-bottom: 20px;
+}
+.admin-topo h1 { margin: 0; font-size: 1.5rem; }
+.admin-topo nav { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.95rem; }
+.bloco {
+  margin-bottom: 16px;
+  padding: 18px;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-radius: 14px;
+}
+.bloco h2 { margin: 0 0 12px; font-size: 1.1rem; }
+.bloco .dica { margin-bottom: 0; }
+.bloco-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.bloco-topo h2 { margin: 0; }
+.contador {
+  display: inline-block;
+  min-width: 1.8em;
+  margin-left: 6px;
+  padding: 1px 8px;
+  background: var(--fundo);
+  color: var(--suave);
+  border-radius: 99px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+.form-perguntas { display: flex; flex-direction: column; gap: 10px; }
+.form-perguntas textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--fundo);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  line-height: 1.6;
+  resize: vertical;
+}
+.form-perguntas button, .bloco-topo button {
+  align-self: flex-start;
+  padding: 9px 16px;
+  background: var(--destaque);
+  color: var(--destaque-texto);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.bloco-topo button.perigo { background: transparent; color: var(--perigo); border-color: currentColor; }
+button:disabled { opacity: 0.5; cursor: default; }
+code { padding: 1px 5px; background: var(--fundo); border-radius: 5px; font-size: 0.9em; }
+.tabela { width: 100%; border-collapse: collapse; }
+.tabela th, .tabela td { padding: 8px 6px; border-bottom: 1px solid var(--borda); text-align: left; }
+.tabela th {
+  color: var(--suave);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.tabela .num { width: 5em; text-align: right; font-variant-numeric: tabular-nums; }

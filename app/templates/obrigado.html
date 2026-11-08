@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block titulo %}Respostas enviadas · Perguntas{% endblock %}
+{% block classe %}tela-resposta{% endblock %}
+{% block corpo %}
+<main class="cartao centro">
+  <div class="check" aria-hidden="true">✓</div>
+  <h1>{% if ja_respondeu %}Você já respondeu{% else %}Respostas enviadas!{% endif %}</h1>
+  <p class="dica">
+    {% if ja_respondeu %}Cada pessoa responde uma vez.{% else %}Elas já entraram na média do painel.{% endif %}
+  </p>
+  {% if respostas %}
+  <ol class="suas-respostas">
+    {% for r in respostas %}
+    <li>
+      <span class="sua-pergunta">{{ r.texto }}</span>
+      <span class="mini-regua" style="--v: {{ r.valor }}"><span class="preenchido"></span></span>
+      <span class="sua-nota">{{ r.valor }}%</span>
+    </li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+  <a class="botao" href="/">Ver o resultado</a>
+</main>
+{% endblock %}

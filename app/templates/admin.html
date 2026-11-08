@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block titulo %}Admin · Perguntas{% endblock %}
+{% block classe %}tela-admin{% endblock %}
+{% block corpo %}
+<main class="admin">
+  <header class="admin-topo">
+    <h1>Perguntas</h1>
+    <nav>
+      <a href="/" target="_blank">Abrir o painel</a>
+      <a href="/r" target="_blank">Página de resposta</a>
+      <a href="/qr.png?baixar=1">Baixar QR code</a>
+    </nav>
+  </header>
+
+  <section class="bloco">
+    <h2>Perguntas</h2>
+    <form method="post" action="/admin/perguntas" class="form-perguntas">
+      <textarea name="texto" rows="{{ [perguntas|length + 1, 4]|max }}" required>{{ texto_perguntas }}</textarea>
+      <button type="submit">Salvar perguntas</button>
+    </form>
+    <p class="dica">Uma pergunta por linha, até {{ max_perguntas }}. Corrigir o texto de uma linha
+      mantém as respostas dela; apagar uma linha apaga as respostas daquela pergunta. Para começar
+      uma rodada nova, use <strong>Limpar todas</strong>. O QR code leva para
+      <code>{{ url_resposta }}</code>.</p>
+  </section>
+
+  <section class="bloco">
+    <div class="bloco-topo">
+      <h2>Respostas <span class="contador">{{ total }}</span></h2>
+      <form method="post" action="/admin/limpar"
+            onsubmit="return confirm('Apagar todas as respostas? As réguas ficam vazias e todo mundo pode responder de novo.')">
+        <button type="submit" class="perigo" {% if not total %}disabled{% endif %}>Limpar todas</button>
+      </form>
+    </div>
+    <table class="tabela">
+      <thead><tr><th>Pergunta</th><th class="num">Média</th><th class="num">Pessoas</th></tr></thead>
+      <tbody>
+      {% for p in perguntas %}
+        <tr>
+          <td>{{ p.texto }}</td>
+          <td class="num">{% if p.media is none %}—{% else %}{{ (p.media + 0.5)|int }}%{% endif %}</td>
+          <td class="num">{{ p.n }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <p class="dica">0% é todo mundo no Não; 100%, todo mundo no Sim.</p>
+  </section>
+</main>
+{% endblock %}

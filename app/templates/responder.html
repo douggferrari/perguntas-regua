@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block titulo %}Responder · Perguntas{% endblock %}
+{% block classe %}tela-resposta{% endblock %}
+{% block corpo %}
+<main class="cartao">
+  <p class="rotulo">{{ perguntas|length }} perguntas rápidas</p>
+  <h1>Responda de Não a Sim</h1>
+  <p class="dica">Toque ou arraste em cada régua: quanto mais para a direita, mais sim.</p>
+  <form id="respostas" method="post" action="/r" autocomplete="off">
+    {% for p in perguntas %}
+    <section class="questao">
+      <h2 id="q{{ p.id }}"><span class="questao-num">{{ loop.index }}</span>{{ p.texto }}</h2>
+      <div class="regua-entrada" role="slider" tabindex="0" aria-labelledby="q{{ p.id }}"
+           aria-valuemin="0" aria-valuemax="100" aria-valuetext="sem resposta"
+           data-campo="p{{ p.id }}">
+        <div class="trilho"><div class="preenchido"></div><div class="polegar"></div></div>
+      </div>
+      <div class="extremos">
+        <span class="nao">Não</span>
+        <span class="valor">toque na régua</span>
+        <span class="sim">Sim</span>
+      </div>
+      {# Só vai no POST depois do primeiro toque: ninguém responde 50 sem querer. #}
+      <input type="hidden" name="p{{ p.id }}" disabled>
+    </section>
+    {% endfor %}
+    {% if erro %}<p class="erro">{{ erro }}</p>{% endif %}
+    <p class="dica">Cada pessoa responde uma vez.</p>
+    <button class="botao" type="submit" disabled>Enviar respostas</button>
+  </form>
+  <noscript><p class="erro">Ative o JavaScript do navegador para responder.</p></noscript>
+</main>
+<script src="/static/responder.js?v={{ versao }}"></script>
+{% endblock %}
