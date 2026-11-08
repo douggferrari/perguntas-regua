@@ -66,11 +66,11 @@ a { color: var(--destaque); }
    o matiz anda do vermelho (0) pelo amarelo (50) até o verde (130). --cor-regua
    precisa ser declarada no mesmo elemento que recebe o --v. */
 
-.regua-entrada, .regua, .mini-regua {
+.regua-entrada, .regua {
   --v: 50;
   --cor-regua: hsl(calc(var(--v) * 1.3) 72% var(--luz-regua));
 }
-.trilho, .regua-trilho, .mini-regua {
+.trilho, .regua-trilho {
   position: relative;
   border-radius: 99px;
   background: linear-gradient(to right,
@@ -174,6 +174,8 @@ a { color: var(--destaque); }
 }
 .regua-entrada:focus-visible { outline: 2px solid var(--destaque); outline-offset: -4px; border-radius: 14px; }
 .trilho { height: 14px; }
+/* Na resposta é Não ou Sim: a barra inteira pinta, vermelha no Não e verde no Sim. */
+.trilho .preenchido { width: 100%; transition: background-color 0.2s ease; }
 .polegar {
   position: absolute;
   top: 50%;
@@ -185,6 +187,7 @@ a { color: var(--destaque); }
   border-radius: 50%;
   box-shadow: 0 2px 8px rgb(0 0 0 / 0.22);
   transform: translate(-50%, -50%);
+  transition: left 0.2s ease, border-color 0.2s ease;
 }
 .questao:not(.respondida) .preenchido,
 .questao:not(.respondida) .polegar { visibility: hidden; }
@@ -198,8 +201,11 @@ a { color: var(--destaque); }
 }
 .nao { color: var(--nao); }
 .sim { color: var(--sim); }
+.extremos .nao, .extremos .sim { padding: 6px 0; font-size: 1.1rem; cursor: pointer; }
 .extremos .valor { color: var(--suave); font-size: 0.85rem; font-weight: 500; }
-.respondida .extremos .valor { color: var(--texto); font-size: 1.05rem; font-weight: 700; }
+.respondida .extremos .valor { font-size: 1.05rem; font-weight: 700; }
+[data-resposta="sim"] .extremos .valor { color: var(--sim); }
+[data-resposta="nao"] .extremos .valor { color: var(--nao); }
 .questao + .erro, .questao + .dica { margin-top: 4px; }
 
 .suas-respostas {
@@ -216,9 +222,8 @@ a { color: var(--destaque); }
   padding: 10px 0;
   border-top: 1px solid var(--borda);
 }
-.sua-pergunta { grid-column: 1 / -1; font-size: 0.92rem; line-height: 1.3; }
-.mini-regua { height: 10px; }
-.sua-nota { min-width: 3.2em; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+.sua-pergunta { font-size: 0.92rem; line-height: 1.3; }
+.sua-nota { font-weight: 700; }
 
 /* ---------- painel (telão) ----------
    Tudo em em a partir do font-size do painel, que acompanha a tela. */
@@ -347,7 +352,7 @@ a { color: var(--destaque); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .regua .preenchido, .regua-media { transition: none; }
+  .regua .preenchido, .regua-media, .trilho .preenchido, .polegar { transition: none; }
 }
 
 /* ---------- admin ---------- */

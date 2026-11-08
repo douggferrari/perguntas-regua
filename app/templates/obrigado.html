@@ -13,8 +13,7 @@
     {% for r in respostas %}
     <li>
       <span class="sua-pergunta">{{ r.texto }}</span>
-      <span class="mini-regua" style="--v: {{ r.valor }}"><span class="preenchido"></span></span>
-      <span class="sua-nota">{{ r.valor }}%</span>
+      {% if r.valor >= 50 %}<span class="sua-nota sim">Sim</span>{% else %}<span class="sua-nota nao">Não</span>{% endif %}
     </li>
     {% endfor %}
   </ol>

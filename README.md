@@ -1,17 +1,17 @@
 # Perguntas em régua, ao vivo
 
-O público lê o QR code e, no celular, marca cada pergunta numa régua que vai
-de **Não** (esquerda) a **Sim** (direita). A barra fica vermelha perto do Não,
-amarela no meio e verde perto do Sim. O painel projetado mostra, para cada
-pergunta, a média das respostas numa régua de 0% a 100% e se atualiza sozinho
-a cada 3 segundos.
+O público lê o QR code e, no celular, responde cada pergunta arrastando uma
+régua para o **Não** (esquerda, barra vermelha) ou para o **Sim** (direita,
+barra verde); não há meio-termo. O painel projetado mostra, para cada
+pergunta, quantos % responderam Sim, marcado numa régua de 0% a 100%, e se
+atualiza sozinho a cada 3 segundos.
 
 | Endereço | Para quê |
 |---|---|
 | `/` | o painel: projetar em tela cheia (F11); `?tema=escuro` para fundo escuro |
 | `/r` | página de resposta, para onde o QR leva |
-| `/admin` | editar as perguntas, ver médias, limpar as respostas, baixar o QR |
-| `/api/resultado` | médias em JSON |
+| `/admin` | editar as perguntas, ver o % de Sim, limpar as respostas, baixar o QR |
+| `/api/resultado` | % de Sim por pergunta, em JSON (`media`) |
 | `/qr.png?baixar=1` | QR em alta resolução para slide ou impressão |
 
 No painel o QR fica no canto inferior direito; clique nele para ampliar.
@@ -20,14 +20,17 @@ escrito embaixo), na raiz, já apontam para
 `https://perguntas.agilematuritymodel.com/r` e servem para montar slide antes
 do deploy.
 
-## Como a resposta vira média
+## Como a resposta vira o ponto na régua
 
-- Cada régua guarda a posição de 0 (Não) a 100 (Sim). A média da pergunta é a
-  média dessas posições: 0% é todo mundo no Não; 100%, todo mundo no Sim.
-- A régua começa sem marcação, e o botão só libera com todas tocadas. Assim
-  ninguém entra na média com um 50 que não escolheu.
-- No celular, rolar a página passando o dedo por cima de uma régua não marca
-  nada; marca o toque parado ou o deslize para o lado.
+- Cada resposta é guardada como 0 (Não) ou 100 (Sim), então a média da
+  pergunta já é o % de Sim: 0% é todo mundo no Não; 100%, todo mundo no Sim.
+  Na barra do painel a cor acompanha: vermelha perto de 0%, amarela no meio,
+  verde perto de 100%.
+- No celular, o toque ou o arraste leva o marcador para o lado mais perto, e
+  tocar nas palavras Não/Sim também responde. A régua começa sem marcação e o
+  botão só libera com todas respondidas.
+- Rolar a página passando o dedo por cima de uma régua não marca nada; marca o
+  toque parado ou o deslize para o lado.
 
 ## Uma resposta por pessoa
 

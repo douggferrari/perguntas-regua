@@ -1,5 +1,5 @@
-"""Régua ao vivo: o público lê o QR, marca de Não a Sim cada pergunta em /r e o
-painel em / mostra a média de cada uma numa régua de 0% a 100%."""
+"""Régua ao vivo: o público lê o QR, responde Não ou Sim a cada pergunta em /r
+e o painel em / mostra quantos % responderam Sim, numa régua de 0% a 100%."""
 import io
 import os
 import secrets
@@ -16,7 +16,7 @@ from fastapi.templating import Jinja2Templates
 
 from . import db
 
-VERSAO = "1.0"
+VERSAO = "1.1"
 BASE = Path(__file__).resolve().parent
 # Identifica a pessoa para valer "uma resposta por pessoa". É por navegador:
 # janela anônima burla, mas IP não serve (no escritório todos saem pelo mesmo).
@@ -61,15 +61,15 @@ def respostas_da_pessoa(request: Request) -> list[dict] | None:
 
 
 def ler_valores(form, perguntas: list[dict]) -> dict[int, int] | None:
-    """Um valor de 0 a 100 para cada pergunta, ou None se faltar algum. O campo
-    só vai no POST depois que a pessoa toca na régua (ver responder.js)."""
+    """0 (Não) ou 100 (Sim) para cada pergunta, ou None se faltar algum. O campo
+    só vai no POST depois que a pessoa escolhe um lado (ver responder.js)."""
     valores = {}
     for p in perguntas:
         try:
             valor = int(form.get(f"p{p['id']}", ""))
         except (TypeError, ValueError):
             return None
-        if not 0 <= valor <= 100:
+        if valor not in (0, 100):
             return None
         valores[p["id"]] = valor
     return valores
@@ -104,7 +104,7 @@ async def enviar(request: Request):
     valores = ler_valores(await request.form(), perguntas)
     if valores is None:
         return pagina(request, "responder.html", status_code=422, perguntas=perguntas,
-                      erro="Marque todas as réguas antes de enviar.")
+                      erro="Responda todas as perguntas antes de enviar.")
     pessoa = request.cookies.get(COOKIE_PESSOA, "")[:64] or secrets.token_urlsafe(16)
     with db.conectar() as con:
         registrada = db.adicionar(con, pessoa, valores)

@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS respostas (
     pessoa TEXT NOT NULL UNIQUE,  -- id do cookie do navegador: uma resposta por pessoa
     criada_em TEXT NOT NULL DEFAULT (datetime('now'))
 );
--- Posição que a pessoa marcou na régua de cada pergunta: 0 = Não, 100 = Sim.
+-- Resposta de cada pergunta: 0 = Não, 100 = Sim. Assim a média já sai em % de Sim.
 CREATE TABLE IF NOT EXISTS valores (
     resposta INTEGER NOT NULL REFERENCES respostas (id) ON DELETE CASCADE,
     pergunta INTEGER NOT NULL REFERENCES perguntas (id) ON DELETE CASCADE,
@@ -117,7 +117,7 @@ def total_respostas(con) -> int:
 
 
 def resultado(con) -> list[dict]:
-    """Média de cada pergunta (0 a 100) e quantas pessoas a responderam."""
+    """% de Sim em cada pergunta (a média dos 0/100) e quantas pessoas a responderam."""
     return [
         {"id": id_, "texto": texto, "media": None if media is None else round(media, 1), "n": n}
         for id_, texto, media, n in con.execute(

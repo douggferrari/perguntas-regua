@@ -4,8 +4,8 @@
 {% block corpo %}
 <main class="cartao">
   <p class="rotulo">{{ perguntas|length }} perguntas rápidas</p>
-  <h1>Responda de Não a Sim</h1>
-  <p class="dica">Toque ou arraste em cada régua: quanto mais para a direita, mais sim.</p>
+  <h1>Responda Não ou Sim</h1>
+  <p class="dica">Arraste cada régua para o Não (esquerda) ou para o Sim (direita).</p>
   <form id="respostas" method="post" action="/r" autocomplete="off">
     {% for p in perguntas %}
     <section class="questao">
@@ -17,10 +17,10 @@
       </div>
       <div class="extremos">
         <span class="nao">Não</span>
-        <span class="valor">toque na régua</span>
+        <span class="valor">arraste para um lado</span>
         <span class="sim">Sim</span>
       </div>
-      {# Só vai no POST depois do primeiro toque: ninguém responde 50 sem querer. #}
+      {# Só vai no POST depois que a pessoa escolhe um lado (0 = Não, 100 = Sim). #}
       <input type="hidden" name="p{{ p.id }}" disabled>
     </section>
     {% endfor %}

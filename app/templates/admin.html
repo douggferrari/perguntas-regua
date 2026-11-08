@@ -33,7 +33,7 @@
       </form>
     </div>
     <table class="tabela">
-      <thead><tr><th>Pergunta</th><th class="num">Média</th><th class="num">Pessoas</th></tr></thead>
+      <thead><tr><th>Pergunta</th><th class="num">Sim</th><th class="num">Pessoas</th></tr></thead>
       <tbody>
       {% for p in perguntas %}
         <tr>
@@ -44,7 +44,7 @@
       {% endfor %}
       </tbody>
     </table>
-    <p class="dica">0% é todo mundo no Não; 100%, todo mundo no Sim.</p>
+    <p class="dica">Sim = quantos % das pessoas responderam Sim; é o ponto marcado na régua do painel.</p>
   </section>
 </main>
 {% endblock %}
